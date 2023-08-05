@@ -8,36 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
+    
     let moves = ["🤜", "🫲", "✌️"]
     @State private var computerChoice = Int.random(in: 0..<3)
     @State private var shouldWin = Bool.random()
     @State private var playerScore = 0
+    @State private var questionNumber = 1
+    @State private var isEnded = false
+    
     var body: some View {
         VStack {
             Spacer()
             
             VStack {
                 VStack {
-                    Text("If I choose")
+                    Text("Computer has played...")
                     Text(moves[computerChoice])
                         .font(.system(size: 100))
                         .padding(10)
                 }
-                .font(.title)
+                .font(.subheadline)
                 HStack {
-                    Text("and I want you to")
-                    Text(shouldWin ? "win" : "lose")
+                    Text(shouldWin ? "Which one wins?" : "Which one lose?")
                         .foregroundColor(shouldWin ? .green : .red)
                 }
                 .font(.title)
             }
-            .padding(10)
-            
-            HStack {
-                Text("What must you choose?")
-            }
-            .font(.title2)
-            .padding(5)
             
             Spacer()
             
@@ -45,7 +41,6 @@ struct ContentView: View {
                 ForEach(0..<3) { number in
                     Button(moves[number]) {
                         play(choice: number)
-                        restartGame()
                     }
                     .font(.system(size:50))
                     .padding(20)
@@ -59,6 +54,13 @@ struct ContentView: View {
             
             Spacer()
             Spacer()
+        }
+        .alert("Game end", isPresented: $isEnded) {
+            Button("Play again"){
+                restartGame()
+            }
+        } message: {
+            Text("Your score is \(playerScore)/\(questionNumber)")
         }
         .padding()
     }
@@ -78,9 +80,26 @@ struct ContentView: View {
     
     func calculateScore(_ didWin:Bool) -> Void {
         didWin ? (playerScore += 1) : (playerScore -= 1)
+        isGameEnded()
+    }
+    
+    func isGameEnded() -> Void {
+        if (questionNumber >= 10) {
+            isEnded = true
+        } else {
+            questionNumber += 1
+            nextQuestion()
+        }
+    }
+    
+    func nextQuestion() -> Void {
+        computerChoice = Int.random(in: 0..<3)
+        shouldWin = Bool.random()
     }
     
     func restartGame() -> Void {
+        questionNumber = 1
+        playerScore = 0
         computerChoice = Int.random(in: 0..<3)
         shouldWin = Bool.random()
     }
