@@ -29,7 +29,7 @@ struct ContentView: View {
                 }
                 .font(.subheadline)
                 HStack {
-                    Text(shouldWin ? "Which one wins?" : "Which one lose?")
+                    Text(shouldWin ? "Which one wins?" : "Which one loses?")
                         .foregroundColor(shouldWin ? .green : .red)
                 }
                 .font(.title)
